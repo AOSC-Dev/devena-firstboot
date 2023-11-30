@@ -1,0 +1,1 @@
+../../first-boot.d/01-expand-partition-table.bash
