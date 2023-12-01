@@ -1,0 +1,19 @@
+#!/bin/bash
+# Devena - AOSC OS Device support task force
+# kernel-update.d - Custom hooks for kernel updates
+
+# Raspberry Pi specific kernel updating hooks
+# This file is meant to be sourced by kernel postinst.
+
+DEVENA_LIB=${DEVENA_LIB:-/usr/lib/devena-lib}
+
+source $DEVENA_LIB/rpi/lib.bash
+
+rpi_update_kernel() {
+	update_kernel_v8
+	update_kernel_16k
+	copy_dtbs
+	gen_cmdline
+}
+
+rpi_update_kernel
