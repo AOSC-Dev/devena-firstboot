@@ -13,9 +13,13 @@ if [ ! -e /dev/$ROOTPART ] || [ ! -e "$ROOTPART_PATH" ] ; then
 fi
 # DEVNAME = /dev/some_blkdev, PTUUID = partition table UUID, PTTYPE = gpt|dos
 eval $(blkid -o export /dev/$PKNAME || echo "")
+# Root partition name, e.g. sda1, nvme0n1p2, mmcblk0p2, aosc-root (device-mapper, LVM)
 ROOTPART=$NAME
+# Path to the partition e.g. /dev/sda1, /dev/mapper/aosc-root
 ROOTPART_PATH=$(realpath -q $SOURCE)
+# Disk name containing the partition, e.g. sda, nvme0n1
 ROOTDEV=$PKNAME
+# Path to the disk e.g. /dev/sda
 ROOTDEV_PATH=$DEVNAME
 
 [ -e /etc/default/devena ] && source /etc/default/devena
@@ -37,10 +41,6 @@ resize_partition_table() {
 		echo "    Can't perform the resize. Skipping."
 		exit 0
 	fi
-}
-
-resize_root_partition() {
-	echo "[+] Expanding the root filesystem..."
 	# If the root filesystem is a physical partition
 	if [ -e /sys/class/block/$ROOTPART/partition ] ; then
 		PARTNUM=$(cat /sys/class/block/$ROOTPART/partition)
@@ -48,23 +48,8 @@ resize_root_partition() {
 		echo ",+" | sfdisk -f -N $PARTNUM $ROOTDEV
 		partprobe $ROOTDEV
 	fi
-	
-	case "$TYPE" in
-		ext4)
-			resize2fs $ROOTPART_PATH
-			;;
-		xfs)
-			xfs_growfs $ROOTPART_PATH
-			;;
-		btrfs)
-			btrfs filesystem resize $ROOTPART_PATH
-			;;
-		*)
-			echo "[!] Unsupported filesystem: $TYPE. Skipping."
-			exit 0
-			;;
-	esac
 }
+
 
 # Basic sanity checks
 # Check if the root partition is a Device Mapper node.
@@ -73,12 +58,10 @@ resize_root_partition() {
 if [[ "$ROOTPART_PATH" = \/dev\/dm* ]] ; then
 	echo "[!] Root partition is possibly a logical volume. Skipping expanding"
 	echo "    the partition table."
+	exit 0
 # If the following is true, then the root partition is probably a NFS mount
 # or iSCSI target.
 elif [ "$RESIZE_PARTITION_TABLE" ] ; then
 	resize_partition_table
 fi
-
-resize_root_partition
-
 echo "[+] Finished."
