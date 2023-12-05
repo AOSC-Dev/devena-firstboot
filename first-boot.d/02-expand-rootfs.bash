@@ -7,7 +7,7 @@
 
 resize_root_partition() {
 	echo "[+] Expanding the root filesystem..."
-	
+	eval $(blkid -o export $ROOTPART_PATH)
 	case "$TYPE" in
 		ext4)
 			resize2fs $ROOTPART_PATH
