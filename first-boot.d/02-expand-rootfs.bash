@@ -3,16 +3,6 @@
 # first-boot.d - Device specific first boot configuration
 # expand-rootfs - automatically expand the root filesystem.
 
-eval $(findmnt -Pyo SOURCE /)
-# NAME = some_blkdevpN, PKNAME = some_blkdev
-eval $(lsblk -Pydno NAME,PKNAME $SOURCE)
-ROOTPART=$NAME
-ROOTPART_PATH=$(realpath -q $SOURCE)
-if [ ! -e /dev/$ROOTPART ] || [ ! -e "$ROOTPART_PATH" ] ; then
-	echo "[!] Root partition is not a physical partition. Skipping."
-	exit 0
-fi
-
 [ -e /etc/default/devena ] && source /etc/default/devena
 
 resize_root_partition() {
@@ -35,4 +25,7 @@ resize_root_partition() {
 	esac
 }
 
-resize_root_partition
+if [ "$RESIZE_ROOTPART" ] && [ "$HAS_REAL_ROOTPART" == "1" ] \
+	&& [ "$HAS_REAL_ROOTDEV" == "1" ] ; then
+	resize_root_partition
+fi
