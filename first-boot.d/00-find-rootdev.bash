@@ -6,6 +6,7 @@
 
 [ -e /etc/default/devena ] && source /etc/default/devena
 
+echo "[+] Finding the block device containing the root filesystem ..."
 # SOURCE = /dev/some_blkdevpN
 eval $(findmnt -Pyo SOURCE /)
 # NAME = some_blkdevpN, PKNAME = some_blkdev
@@ -36,6 +37,7 @@ if [ ! -e /dev/$ROOTPART ] || [ ! -e "$ROOTPART_PATH" ] ; then
 	return
 fi
 
+echo "[+] The root filesystem is located at $ROOTPART_PATH."
 
 export HAS_REAL_ROOTPART=1
 
@@ -43,5 +45,7 @@ if [ ! -e /dev/$ROOTDEV ] || [ ! -e "$ROOTDEV_PATH" ] ; then
 	echo "[!] The disk containing the root partition is not a physical disk."
 	return
 fi
+
+echo "[+] The disk containing the root partition is $ROOTDEV_PATH."
 
 export HAS_REAL_ROOTDEV=1
