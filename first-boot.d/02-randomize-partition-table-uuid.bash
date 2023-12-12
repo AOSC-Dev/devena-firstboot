@@ -26,7 +26,8 @@ randomize_partition_table() {
 	echo "[+] Done."
 }
 
-if [ "$RESIZE_PARTITION_TABLE" ] && [ "$HAS_REAL_ROOTDEV" == "1" ] \
-	&& [ "$HAS_REAL_ROOTPART" == "1" ] ; then
+if [ "x$RESIZE_PARTITION_TABLE" == "x1" ] && \
+	[ "x$HAS_REAL_ROOTDEV" == "x1" ] && \
+	[ "x$HAS_REAL_ROOTPART" == "x1" ] ; then
 	randomize_partition_table
 fi

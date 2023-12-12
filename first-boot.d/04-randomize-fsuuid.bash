@@ -45,7 +45,8 @@ randomize_rootfs_uuid() {
 	echo "[+] Finished. The new UUID is $UUID."
 }
 
-if [ "$RANDOMIZE_ROOTFS_UUID" ] && [ "$HAS_REAL_ROOTDEV" == "1" ] \
-	&& [ "$HAS_REAL_ROOTPART" == "1" ] ; then
+if [ "x$RANDOMIZE_ROOTFS_UUID" == "x1" ] && \
+	[ "x$HAS_REAL_ROOTDEV" == "x1" ] && \
+	[ "x$HAS_REAL_ROOTPART" == "x1" ] ; then
 	randomize_rootfs_uuid
 fi

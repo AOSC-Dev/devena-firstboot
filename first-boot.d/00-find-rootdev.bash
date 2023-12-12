@@ -23,6 +23,10 @@ export ROOTDEV=$PKNAME
 export ROOTDEV_PATH=$DEVNAME
 # Partition table of the root disk, either 'gpt' or 'dos'
 export ROOTDEV_LABEL=$PTTYPE
+
+# We consider a "real" rootfs as it is either inside a physical partition or
+# a logical volume.
+HAS_REAL_ROOTFS=1
 # Basic sanity checks
 # Check if the root partition is a Device Mapper node.
 # We can expand the root filesystem, but mostly it is already the size of
@@ -34,6 +38,7 @@ fi
 # If the following is true, then the root partition is probably a NFS mount
 if [ ! -e /dev/$ROOTPART ] || [ ! -e "$ROOTPART_PATH" ] ; then
 	echo "[!] Root partition is not a physical partition."
+	HAS_REAL_ROOTFS=0
 	return
 fi
 
@@ -43,9 +48,11 @@ export HAS_REAL_ROOTPART=1
 
 if [ ! -e /dev/$ROOTDEV ] || [ ! -e "$ROOTDEV_PATH" ] ; then
 	echo "[!] The disk containing the root partition is not a physical disk."
+	HAS_REAL_ROOTFS=0
 	return
 fi
 
 echo "[+] The disk containing the root partition is $ROOTDEV_PATH."
 
+export HAS_REAL_ROOTFS
 export HAS_REAL_ROOTDEV=1

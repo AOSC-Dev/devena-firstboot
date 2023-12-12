@@ -25,7 +25,8 @@ resize_root_partition() {
 	esac
 }
 
-if [ "$RESIZE_ROOTPART" ] && [ "$HAS_REAL_ROOTPART" == "1" ] \
-	&& [ "$HAS_REAL_ROOTDEV" == "1" ] ; then
+if [ "x$RESIZE_ROOTPART" == "x1" ] && \
+	[ "x$HAS_REAL_ROOTPART" == "x1" ] && \
+	[ "x$HAS_REAL_ROOTDEV" == "x1" ] ; then
 	resize_root_partition
 fi
