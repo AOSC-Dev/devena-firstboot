@@ -1,0 +1,29 @@
+# Devena - AOSC OS device support task force
+# This is the unit file to launch the first boot setup program inside initrd.
+
+[Unit]
+Description=Devena - First Boot Setup
+DefaultDependencies=no
+Before=dracut-pre-mount.service initrd-root-fs.target sysroot.mount systemd-fsck-root.service
+After=systemd-vconsole-setup.service dracut-initqueue.service cryptsetup.target
+Wants=systemd-vconsole-setup.service
+Conflicts=shutdown.target emergency.target
+
+[Service]
+Environment=HOME=/
+Environment=DRACUT_SYSTEMD=1
+Environment=NEWROOT=/sysroot
+WorkingDirectory=/
+ExecStart=-/sbin/devena-firstboot
+Type=oneshot
+StandardInput=tty-force
+StandardOutput=tty-force
+StandardError=tty-force
+KillMode=process
+IgnoreSIGPIPE=no
+TasksMax=infinity
+TTYReset=yes
+
+# Bash ignores SIGTERM, so we send SIGHUP instead, to ensure that bash
+# terminates cleanly.
+KillSignal=SIGHUP
