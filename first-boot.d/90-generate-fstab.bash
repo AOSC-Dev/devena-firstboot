@@ -6,7 +6,7 @@
 generate_fstab() {
 	echo "[+] Finishing setup ..."
 	echo "[+] Generating new fstab ..."
-	genfstab -U -p / | sed '/resolv/d' > /etc/fstab
+	genfstab -U -p /sysroot | sed '/resolv/d' > $TARGET_SYSROOT/etc/fstab
 	echo "[+] Finished."
 }
 
