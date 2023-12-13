@@ -10,7 +10,7 @@ resize_partition_table() {
 	# Resize the partition table
 	# This does noting to the partitoin table, except expanding it to the whole
 	# disk. It does this automatically on write. Only affects GPT.
-	echo '' | sudo sfdisk -f $ROOTDEV_PATH
+	echo '' | sfdisk -qf $ROOTDEV_PATH
 
 	# Reload the partition table.
 	partprobe $ROOTDEV_PATH
@@ -28,7 +28,7 @@ resize_partition_table() {
 		# Resize the root partition
 		# Note, this is different from expanding the filesystem. You
 		# need to expand the partition size first.
-		echo ",+" | sfdisk -f -N $PARTNUM $ROOTDEV
+		echo ",+" | sfdisk -qf -N $PARTNUM $ROOTDEV_PATH
 		partprobe $ROOTDEV_PATH
 	fi
 }

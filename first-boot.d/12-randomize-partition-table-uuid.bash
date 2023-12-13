@@ -21,7 +21,7 @@ randomize_partition_table() {
 		$PTFILE
 	# Then we import it back, letting sfdisk to generate any identifier
 	# automatically.
-	cat $PTFILE | sfdisk -f $ROOTDEV_PATH
+	cat $PTFILE | sfdisk -qf $ROOTDEV_PATH
 	partprobe $ROOTDEV_PATH
 	echo "[+] Done."
 }
