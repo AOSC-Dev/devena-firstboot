@@ -43,24 +43,24 @@ allocate_swapfile() {
 	# The reason for *4096 is that the block size is 4KiB. The block size is
 	# formatted using %S. Available blocks is formatted using %a.
 	# Avoid parsing the output of df(1).
-	rootavail=$(stat -f -c '%a*%S/1048576' / | bc)
+	rootavail=$(stat -f -c '%a*%S/1048576' $TARGET_SYSROOT/ | bc)
 	insufficient_space=$(echo "$swapsize >= $rootavail")
 	if [ "x$insufficient_space" == "x1" ] ; then
 		echo "[!] Not enough space to allocate a swapfile with this size. Skipping."
 	else
 		echo "[+] Allocating swapfile ..."
-		dd if=/dev/zero of=/swapfile bs=1MiB count=$swapsize
-		chmod 000 /swapfile
-		mkswap /swapfile
+		dd if=/dev/zero of=$TARGET_SYSROOT/swapfile bs=1MiB count=$swapsize
+		chmod 000 $TARGET_SYSROOT/swapfile
+		mkswap $TARGET_SYSROOT/swapfile
 		echo "[+] Enabling swapfile..."
-		swapon /swapfile
+		swapon $TARGET_SYSROOT/swapfile
 	fi
 }
 
 # We also need to ensure that the filesystem this swapfile is going to be
 # allocated is a physical filesystem.
-if [ "x$ALLOC_SWAPFILE" == "x1" ] && \
+if [ "x$ALLOCATE_SWAPFILE" == "x1" ] && \
 	[ "x$HAS_REAL_ROOTFS" == "x1" ] && \
-	[ ! -e /swapfile ] ; then
+	[ ! -e $TARGET_SYSROOT/swapfile ] ; then
 	allocate_swapfile
 fi
