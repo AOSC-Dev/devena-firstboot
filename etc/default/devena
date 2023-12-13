@@ -1,0 +1,19 @@
+# Devena - AOSC OS Device support task force
+# /etc/default/devena - config file for devena
+
+# Allow resizing partition table
+# Should be enabled for most targets
+RESIZE_PARTITION_TABLE=1
+
+# Allow expanding the root partition and filesystem
+RESIZE_ROOTPART=1
+
+# Allow swapfile allocation
+ALLOCATE_SWAPFILE=1
+
+# Allow randomizing root filesystem UUID
+RANDOMIZE_ROOTFS_UUID=1
+
+# Custom swapfile size
+# SWAPFILE_SIZE_MIB=4096
+# vim: filetype=bash
