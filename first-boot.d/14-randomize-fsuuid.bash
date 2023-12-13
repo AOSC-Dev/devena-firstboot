@@ -21,27 +21,36 @@
 
 randomize_rootfs_uuid() {
 	eval $(blkid -o export $ROOTPART_PATH)
-	echo "[+] The filesystem UUID was $UUID."
+	ROOTFS_UUID_OLD=$UUID
+	ROOTFS_UUID_NEW=$(uuidgen)
+	echo "[+] The filesystem UUID was $ROOTFS_UUID_OLD."
 	echo "[+] Randomizing root filesystem UUID ..."
 	case "$TYPE" in
 		ext4)
-			tune2fs -U random $ROOTPART_PATH
+			tune2fs -U $ROOTFS_UUID_NEW $ROOTPART_PATH
 			;;
 		xfs)
 			# Unsupported unless we have a specialized initrd
-			xfs_admin -U generate $ROOTPART_PATH
+			xfs_admin -U $ROOTFS_UUID_NEW $ROOTPART_PATH
 			;;
 		btrfs)
 			# Unsupported unless we have a specialized initrd
-			btrfstune -u $ROOTPART_PATH
+			btrfstune -U $ROOTFS_UUID_NEW $ROOTPART_PATH
 			;;
 		*)
 			echo "[!] Unsupported filesystem."
 			return
 			;;
 	esac
-	eval $(lsblk -o UUID -Py $ROOTDEV_PATH)
 	partprobe $ROOTDEV_PATH
+	# There is a possible race condition which might result the following branch to be true.
+	sleep 5
+	eval $(lsblk -o UUID -Py $ROOTDEV_PATH)
+	if [ "x$ROOTFS_UUID_NEW" != "x$UUID" ] ; then
+		echo "Error - Conflicting UUID discovered - This should not happen."
+		exit 1
+	fi
+	export ROOTFS_UUID_OLD ROOTFS_UUID_NEW
 	echo "[+] Finished. The new UUID is $UUID."
 }
 
