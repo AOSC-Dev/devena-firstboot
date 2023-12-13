@@ -6,6 +6,9 @@
 [ -e /etc/default/devena ] && source /etc/default/devena
 
 resize_root_partition() {
+	TMP_MOUNT=$(mktemp -d)
+	echo "[+] Mounting the root filesystem to expand it..."
+	mount $ROOTPART_PATH $TMP_MOUNT
 	echo "[+] Expanding the root filesystem..."
 	eval $(blkid -o export $ROOTPART_PATH)
 	case "$TYPE" in
@@ -22,7 +25,10 @@ resize_root_partition() {
 			echo "[!] Unsupported filesystem: $TYPE. Skipping."
 			exit 0
 			;;
-	esac
+	esac > /dev/null
+	sync
+	umount $TMP_MOUNT
+	unset $TMP_MOUNT
 }
 
 if [ "x$RESIZE_ROOTPART" == "x1" ] && \
