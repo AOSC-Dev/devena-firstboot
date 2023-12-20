@@ -11,7 +11,7 @@
 # GPT uses 128-bit UUID for its partition table identifier and each of its
 # partitions. We have to randomize every single one of them.
 randomize_partition_table() {
-	echo "[+] Randomizing partition table unique identifiers ..."
+	info "Randomizing partition table unique identifiers ..."
 	# First we dump the partition table using sfdisk.
 	PTFILE=$(mktemp)
 	sfdisk -d $ROOTDEV_PATH > $PTFILE
@@ -23,7 +23,7 @@ randomize_partition_table() {
 	# automatically.
 	cat $PTFILE | sfdisk -qf $ROOTDEV_PATH
 	partprobe $ROOTDEV_PATH
-	echo "[+] Done."
+	msg "Done."
 }
 
 if [ "x$RESIZE_PARTITION_TABLE" == "x1" ] && \

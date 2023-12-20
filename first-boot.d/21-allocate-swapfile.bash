@@ -37,8 +37,8 @@ allocate_swapfile() {
 	else
 		swapsize=$SWAPFILE_SIZE_MB
 	fi
-	echo "[+] The size of the swap file will be $swapsize MiB."
-	echo "[+] Checking if the root partition is large enough..."
+	msg "The size of the swap file will be $swapsize MiB."
+	msg "Checking if the root partition is large enough..."
 	# Generate a script for bc to process, e.g. "69801*4096/1048576"
 	# The reason for *4096 is that the block size is 4KiB. The block size is
 	# formatted using %S. Available blocks is formatted using %a.
@@ -46,21 +46,30 @@ allocate_swapfile() {
 	rootavail=$(stat -f -c '%a*%S/1048576' $TARGET_SYSROOT/ | bc)
 	insufficient_space=$(echo "$swapsize >= $rootavail")
 	if [ "x$insufficient_space" == "x1" ] ; then
-		echo "[!] Not enough space to allocate a swapfile with this size. Skipping."
+		warn "Not enough space to allocate a swapfile with this size. Skipping."
 	else
-		echo "[+] Allocating swapfile ..."
+		info "Allocating swapfile ..."
 		dd if=/dev/zero of=$TARGET_SYSROOT/swapfile bs=1MiB count=$swapsize
 		chmod 000 $TARGET_SYSROOT/swapfile
 		mkswap $TARGET_SYSROOT/swapfile
-		echo "[+] Enabling swapfile..."
+		msg "Done."
+	fi
+}
+enable_swapfile() {
+	# We need to enable it in order to save it altogether during genfstab.
+	if [ -e "$TARGET_SYSROOT/swapfile" ] ; then
+		info "Enabling swapfile..."
 		swapon $TARGET_SYSROOT/swapfile
+		msg "Done."
 	fi
 }
 
 # We also need to ensure that the filesystem this swapfile is going to be
 # allocated is a physical filesystem.
 if [ "x$ALLOCATE_SWAPFILE" == "x1" ] && \
-	[ "x$HAS_REAL_ROOTFS" == "x1" ] && \
-	[ ! -e $TARGET_SYSROOT/swapfile ] ; then
-	allocate_swapfile
+	[ "x$HAS_REAL_ROOTFS" == "x1" ] ; then
+	if [ ! -e $TARGET_SYSROOT/swapfile ] ; then
+		allocate_swapfile
+	fi
+	enable_swapfile
 fi

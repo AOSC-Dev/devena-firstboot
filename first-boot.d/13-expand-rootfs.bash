@@ -7,9 +7,9 @@
 
 resize_root_partition() {
 	TMP_MOUNT=$(mktemp -d)
-	echo "[+] Mounting the root filesystem to expand it..."
+	info "Mounting the root filesystem to expand it..."
 	mount $ROOTPART_PATH $TMP_MOUNT
-	echo "[+] Expanding the root filesystem..."
+	info "Expanding the root filesystem..."
 	eval $(blkid -o export $ROOTPART_PATH)
 	case "$TYPE" in
 		ext4)
@@ -22,13 +22,14 @@ resize_root_partition() {
 			btrfs filesystem resize $ROOTPART_PATH
 			;;
 		*)
-			echo "[!] Unsupported filesystem: $TYPE. Skipping."
+			warn "Unsupported filesystem: $TYPE. Skipping."
 			exit 0
 			;;
 	esac > /dev/null
 	sync
 	umount $TMP_MOUNT
 	unset $TMP_MOUNT
+	msg "Done."
 }
 
 if [ "x$RESIZE_ROOTPART" == "x1" ] && \

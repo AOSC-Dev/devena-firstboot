@@ -10,7 +10,7 @@
 # Source /dracut-state.sh
 
 if [ ! -e /dracut-state.sh ] ; then
-	dlog_err "Not running in initrd, exiting."
+	err "Not running in initrd, exiting."
 	sleep 5
 	exit 1
 fi
@@ -22,12 +22,11 @@ source /dracut-state.sh
 # if we are running in initrd without parsing them, since they are NOT
 # mounted.
 
-echo "Gathering information of the root partition ..."
+info "Gathering information of the root partition ..."
 rootdev_type=${root%%:*}
 if [ "x$rootdev_type" != "xblock" ] ; then
 	# Unsupported root device type
-	echo "Unsupported root device type: $rootdev_type."
-	exit 1
+	die "Unsupported root device type: $rootdev_type."
 fi
 
 ROOTPART_PATH=${root#block:}
@@ -39,7 +38,8 @@ export HAS_REAL_ROOTFS=1
 if [[ "$ROOTPART_PATH" = /dev/dm* ]] ; then
 	# Unfortunately in the current circumstances we can only try to grow
 	# the root filesystem and allocate the swap file.
-	echo "Warning - Your root filesystem is in a device mapper node, this program has reduced functionality."
+	warn "Your root filesystem is in a device mapper node."
+	warn "This program has reduced functionality."
 	export HAS_REAL_ROOTDEV=0
 	export HAS_REAL_ROOTPART=0
 fi
@@ -60,12 +60,13 @@ export ROOTDEV_LABEL=$PTTYPE
 
 if [ ! -e "$ROOTDEV_PATH" ] ; then
 	# Should not reach here, but there are always edge cases.
-	echo "Warning - We don't know where is the disk containing the root partition, this program has reduced functionality."
+	warn "We don't know where is the disk containing the root partition."
+	warn "This program has reduced functionality."
 	export HAS_REAL_ROOTDEV=0
 else
 	export HAS_REAL_ROOTDEV=1
 fi
 
-echo "Your root filesystem is located at $ROOTPART_PATH."
-echo "The disk containing this root filesystem is $ROOTPART_PATH."
-echo "The partition map on this disk is $ROOTDEV_LABEL."
+msg "Your root filesystem is located at $ROOTPART_PATH."
+msg "The disk containing this root filesystem is $ROOTDEV_PATH."
+msg "The partition map on this disk is $ROOTDEV_LABEL."
