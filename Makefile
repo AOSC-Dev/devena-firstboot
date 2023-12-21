@@ -48,6 +48,10 @@ generic-components = dracut
 
 .PHONY: $(generic-components)
 
+install: install-generic $(generic-components)
+	@$(info)"Installing files for $(DEVICE) ..." $(clr)
+	$(MAKE) -C $(DEVICE) $@
+
 check:
 	@if [ ! "$(DEVICE)" ] ; then \
 		$(err)"Please specify a device." $(clr) ; \
@@ -68,10 +72,6 @@ check:
 
 install-generic: check
 	@$(info)"Installing generic components ..."$(clr)
-
-install: install-generic $(generic-components)
-	@$(info)"Installing files for $(DEVICE) ..." $(clr)
-	$(MAKE) -C $(DEVICE) $@
 
 $(generic-components):
 	@$(info)"Installing component $@ ..." $(clr)
