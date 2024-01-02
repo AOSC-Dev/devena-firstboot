@@ -30,7 +30,7 @@ KERNEL_UPDATE_HOOK_DIR := $(DEVENA_LIB_DIR)/kernel-update.d
 export DEVENA_LIB_DIR FIRSTBOOT_DIR KERNEL_UPDATE_HOOK_DIR TOP
 
 # Available devices
-DEVICES := rpi asahi
+DEVICES := rpi asahi generic
 
 # Utilities
 INSTALL = install
