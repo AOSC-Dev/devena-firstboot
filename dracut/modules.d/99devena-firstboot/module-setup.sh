@@ -7,7 +7,7 @@ check() {
 	require_binaries \
 		bash partprobe lsblk blkid xfs_admin tune2fs realpath \
 		basename findmnt btrfstune unshare install env \
-		dialog uuidgen mountpoint dd sfdisk sed mktemp resize2fs \
+		uuidgen mountpoint dd sfdisk sed mktemp resize2fs \
 		xfs_growfs swapon mkswap bc chroot stat sync || return 1
 	return 255
 }
@@ -21,15 +21,15 @@ install() {
 	inst_multiple \
 		bash partprobe lsblk blkid xfs_admin tune2fs realpath \
 		basename findmnt btrfstune unshare install env \
-		dialog uuidgen mountpoint dd sfdisk sed mktemp resize2fs \
+		uuidgen mountpoint dd sfdisk sed mktemp resize2fs \
 		xfs_growfs swapon mkswap bc chroot stat sync
 	# Devena files
 	for f in /usr/lib/devena-lib/first-boot.d/* ; do
 		inst $f
 	done
 	inst_script "$moddir"/devena-firstboot.bash /sbin/devena-firstboot
-	inst_script "$moddir"/initrd-lib.bash /usr/lib/devena-lib/initrd-lib.bash
-	inst /etc/defalt/devena
+	inst_simple /usr/lib/devena-lib/devena-utils.bash /usr/lib/devena-lib/devena-utils.bash
+	inst /etc/default/devena
 	# Dependencies
 	inst_script /usr/bin/arch-chroot /sbin/arch-chroot
 	inst_script /usr/bin/genfstab /sbin/genfstab
