@@ -6,8 +6,8 @@
 # We prefer using swapfile instead of a swap partition.
 
 allocate_swapfile() {
-	echo "[+] Allocating a swapfile ..."
-	echo "[+] Determining the size of the swapfile ..."
+	info "Allocating a swapfile ..."
+	info "Determining the size of the swapfile ..."
 	# We allow users to supply the swapfile size themselves.
 	if [ "x$SWAPFILE_SIZE_MB" == "x" ] ; then
 		# Swapfile size should be a multiple of page size, because it should.
