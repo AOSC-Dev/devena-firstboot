@@ -45,12 +45,13 @@ export INSTALL
 
 # This is required by all devices
 generic-components = dracut
+generic-files = devena-utils.bash
+.PHONY: $(generic-components) $(generic-files)
 
-.PHONY: $(generic-components)
-
-install: install-generic $(generic-components)
+install: install-generic $(generic-components) $(generic-files)
 	@$(info)"Installing files for $(DEVICE) ..." $(clr)
 	$(MAKE) -C $(DEVICE) $@
+	@$(info)"Installation finished!" $(clr)
 
 check:
 	@if [ ! "$(DEVICE)" ] ; then \
@@ -76,5 +77,9 @@ install-generic: check
 $(generic-components):
 	@$(info)"Installing component $@ ..." $(clr)
 	$(MAKE) -C $@ install
+
+$(generic-files):
+	@$(info)"Copying file $@" $(clr)
+	@$(INSTALL) $(TOP)/$@ $(DESTDIR)/$(DEVENA_LIB_DIR)/$@
 
 .PHONY: install
