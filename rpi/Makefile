@@ -1,6 +1,6 @@
 #!/bin/make -f
 
-COMPONENTS = first-boot.d kernel-update.d
+COMPONENTS = first-boot.d
 
 .PHONY: install-components install $(COMPONENTS)
 
