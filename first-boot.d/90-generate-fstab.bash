@@ -27,7 +27,11 @@ generate_fstab() {
 #
 # <device>	<mntpnt>	<fstype>	<options>	<dump>	<pass>
 EOF
-	genfstab -U -p "$TARGET_SYSROOT" | sed '/resolv/d' >> "$TARGET_SYSROOT"/etc/fstab
+	if [ "x$FSTAB_USE_PARTUUID" = "x1" ] ; then
+		genfstab -t PARTUUID -p "$TARGET_SYSROOT" | sed '/resolv/d' >> "$TARGET_SYSROOT"/etc/fstab
+	else
+		genfstab -t UUID -p "$TARGET_SYSROOT" | sed '/resolv/d' >> "$TARGET_SYSROOT"/etc/fstab
+	fi
 	msg "Finished."
 }
 

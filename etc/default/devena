@@ -14,6 +14,8 @@ ALLOCATE_SWAPFILE=1
 # Allow randomizing root filesystem UUID
 RANDOMIZE_ROOTFS_UUID=1
 
+# Use PARTUUID instead of filesystem UUID in fstab
+FSTAB_USE_PARTUUID=0
 # Custom swapfile size
 # SWAPFILE_SIZE_MIB=4096
 # vim: filetype=bash
