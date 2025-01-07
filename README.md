@@ -1,6 +1,6 @@
-# devona-libs - Device specific post-installation routines
+# devona-firstboot - Device specific first boot setup routines
 
-This repo contains routines used for first-boot setup and maintenance work, e.g. kernel updates, bootloader updates and firmware updates.
+This repo contains routines used for first-boot setup, for example randomizing partition and filesystem UUIDs, resizing the partition and filesystem and so on.
 
 ## Standard (RFC)
 
