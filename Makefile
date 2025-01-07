@@ -19,7 +19,7 @@ export info err clr
 TOP := $(CURDIR)
 
 # Location of devena library
-DEVENA_LIB_DIR := /usr/lib/devena-lib
+DEVENA_LIB_DIR := /usr/lib/devena-firstboot
 
 # Location of the first boot setup script
 FIRSTBOOT_DIR := $(DEVENA_LIB_DIR)/first-boot.d
@@ -33,10 +33,10 @@ export DEVENA_LIB_DIR FIRSTBOOT_DIR KERNEL_UPDATE_HOOK_DIR TOP
 DEVICES := rpi asahi generic
 
 # Utilities
-INSTALL = install
+INSTALL = install -D
 
 ifeq ($(VERBOSE),1)
-INSTALL = install -v
+INSTALL = install -Dv
 endif
 
 export INSTALL
