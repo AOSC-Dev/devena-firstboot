@@ -24,11 +24,11 @@ install() {
 		uuidgen mountpoint dd sfdisk sed mktemp resize2fs \
 		xfs_growfs swapon mkswap bc chroot stat sync
 	# Devena files
-	for f in /usr/lib/devena-lib/first-boot.d/* ; do
+	for f in /usr/lib/devena-firstboot/first-boot.d/* ; do
 		inst $f
 	done
 	inst_script "$moddir"/devena-firstboot.bash /sbin/devena-firstboot
-	inst_simple /usr/lib/devena-lib/devena-utils.bash /usr/lib/devena-lib/devena-utils.bash
+	inst_simple /usr/lib/devena-firstboot/devena-utils.bash /usr/lib/devena-firstboot/devena-utils.bash
 	inst /etc/default/devena
 	# Dependencies
 	inst_script /usr/bin/arch-chroot /sbin/arch-chroot

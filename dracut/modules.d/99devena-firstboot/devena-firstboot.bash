@@ -4,7 +4,7 @@
 # Terminate plymouth first
 type plymouth > /dev/null 2>&1 && plymouth quit
 
-source /usr/lib/devena-lib/devena-utils.bash
+source /usr/lib/devena-firstboot/devena-utils.bash
 
 echo -e "\033[1m========================================"
 echo           "        AOSC OS First Boot Setup"
@@ -14,7 +14,7 @@ info "Welcome to AOSC OS!"
 info "The first boot setup is taking place, please wait."
 sleep 5
 
-for f in /usr/lib/devena-lib/first-boot.d/*.bash ; do
+for f in /usr/lib/devena-firstboot/first-boot.d/*.bash ; do
 	source $f
 	sleep 1
 done
