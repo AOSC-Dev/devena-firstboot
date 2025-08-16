@@ -17,6 +17,11 @@ if [ "${#KERNELS[@]}" = 0 ] ; then
 	exit 1
 fi
 
+if [ ! -e /etc/default/devena ] ; then
+	echo "Installing devena-firstboot config file ..."
+	install -Dvm644 etc/default/devena /etc/default/devena
+fi
+
 OUTPUT=$1
 if [ -z "$OUTPUT" ] ; then
 	OUTPUT=/boot/devena-firstboot.img
