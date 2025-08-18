@@ -8,7 +8,8 @@ check() {
 		bash partprobe lsblk blkid xfs_admin tune2fs realpath \
 		basename findmnt btrfstune unshare install env \
 		uuidgen mountpoint dd sfdisk sed mktemp resize2fs \
-		xfs_growfs swapon mkswap bc chroot stat sync || return 1
+		xfs_growfs swapon mkswap bc chroot stat sync \
+		awk grep tee || return 1
 	return 255
 }
 
@@ -22,7 +23,8 @@ install() {
 		bash partprobe lsblk blkid xfs_admin tune2fs realpath \
 		basename findmnt btrfstune unshare install env \
 		uuidgen mountpoint dd sfdisk sed mktemp resize2fs \
-		xfs_growfs swapon mkswap bc chroot stat sync
+		xfs_growfs swapon mkswap bc chroot stat sync \
+		awk grep tee
 	# Devena files
 	for f in /usr/lib/devena-firstboot/first-boot.d/* ; do
 		inst $f
