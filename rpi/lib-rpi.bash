@@ -15,12 +15,6 @@ aosc_err() {
 
 # Try to find the boot partition and mount it automatically.
 mount_boot_rpi() {
-	# Try to find it in /etc/fstab.
-	if grep -q -- '/boot/rpi' /etc/fstab ; then
-		echo "[+] Found the boot partition in fstab, mounting now."
-		mount /boot/rpi
-		return
-	fi
 	# Find the disk which contains the root partition.
 	ROOTPART=$(findmnt -lno SOURCE /)
 	ROOTDEV="$(lsblk -lno PKNAME $ROOTPART)"
