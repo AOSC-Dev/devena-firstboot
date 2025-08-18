@@ -16,10 +16,11 @@ aosc_err() {
 # Try to find the boot partition and mount it automatically.
 mount_boot_rpi() {
 	# Find the disk which contains the root partition.
-	ROOTPART=$(findmnt -lno SOURCE /)
+	SYSROOT="${TARGET_SYSROOT:-/sysroot}"
+	ROOTPART=$(findmnt -lno SOURCE $SYSROOT)
 	ROOTDEV="$(lsblk -lno PKNAME $ROOTPART)"
 	# If any of these contains device mapper paths, the script will fail.
-	if [ ! -e "/dev/$ROOTPART" ] || [ ! -e "/dev/$ROOTDEV" ] ; then
+	if [ ! -e "$ROOTPART" ] || [ ! -e "/dev/$ROOTDEV" ] ; then
 		echo "[!] Could not determine the root device. Failing."
 		echo "    Please mount the boot partition to /boot/rpi and try again."
 		exit 1
@@ -72,7 +73,7 @@ gen_cmdline() {
 		mount_boot_rpi
 	fi
 	aosc_info "Generating kernel command line ..."
-	eval $(findmnt -o SOURCE -Py /)
+	eval $(findmnt -o SOURCE -Py ${TARGET_SYSROOT:-/sysroot})
 	if [[ "$SOURCE" = /dev/dm* ]] || [ ! -e "$SOURCE" ] ; then
 		aosc_info "Root filesystem is not inside a physical disk partition. Skipping."
 	fi
