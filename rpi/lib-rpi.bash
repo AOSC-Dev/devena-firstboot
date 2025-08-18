@@ -1,15 +1,15 @@
 #!/bin/bash
 # Utility shell functions for Raspberry Pi support
 
-aosc_info {
+aosc_info() {
 	echo -e "\033[1;36m**\033[1;37m\t$@\033[0m"
 }
 
-aosc_warn {
+aosc_warn() {
 	echo -e "\033[1;33m**\033[1;37m\t$@\033[0m"
 }
 
-aosc_err {
+aosc_err() {
 	echo -e "\033[1;31m!!\033[1;37m\t$@\033[0m"
 }
 
