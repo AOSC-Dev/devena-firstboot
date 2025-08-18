@@ -17,7 +17,7 @@ randomize_partition_table() {
 	sfdisk -d $ROOTDEV_PATH > $PTFILE
 	# Then we remove every identifiers in it.
 	sed -i  -e '/label-id/d' \
-		-e 's/uuid=.*,//g' \
+		-e 's/,\s*uuid=[0-9a-fA-F-]*//g' \
 		$PTFILE
 	# Then we import it back, letting sfdisk to generate any identifier
 	# automatically.
