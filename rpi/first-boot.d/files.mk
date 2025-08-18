@@ -15,4 +15,5 @@ files-firstboot-general = \
 # firstboot-rpi: First boot scripts specific to Raspberry Pi
 files-firstboot-rpi = \
 	2011-mount-boot-partition.bash \
-	9010-remove-devena-initrd.bash
+	9010-remove-devena-initrd.bash \
+	9910-generate-cmdline.bash
