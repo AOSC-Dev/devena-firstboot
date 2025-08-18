@@ -55,16 +55,7 @@ mount_boot_rpi() {
 	fi
 	echo "[+] Mounting /dev/$BOOTPART to /boot/rpi."
 	mount /dev/$BOOTPART /boot/rpi
-	# Inform the user to add the boot partition entry to /etc/fstab, to
-	# prevent the further repetive detection work.
-	eval $(findmnt -Py /boot/rpi)
-	TMPFILE=$(mktemp)
-	echo "[+] It is better to add the entry to mount the boot partition, to avoid"
-	echo "    doing the detection work each time updating the kernel."
-	echo "    You can append the following line to the end of /etc/fstab:"
-	echo -e "\nUUID=$UUID\t/boot/rpi\tvfat\t$OPTIONS\t0 2" | sudo tee $TMPFILE
-	echo -e "\n    Or you can run the following command instead:"
-	echo -e "\ncat $TMPFILE | sudo tee -a /etc/fstab\n"
+	mount /dev/$BOOTPART $TARGET_SYSROOT/boot/rpi
 }
 
 gen_cmdline() {
