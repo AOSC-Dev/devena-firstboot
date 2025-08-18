@@ -26,6 +26,9 @@ install() {
 		xfs_growfs swapon mkswap bc chroot stat sync \
 		awk grep tee
 	# Devena files
+	for f in /usr/lib/devena-firstboot/lib-* ; do
+		inst $f
+	done
 	for f in /usr/lib/devena-firstboot/first-boot.d/* ; do
 		inst $f
 	done
