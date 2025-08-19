@@ -1,18 +1,6 @@
 #!/bin/bash
 # Utility shell functions for Raspberry Pi support
 
-aosc_info() {
-	echo -e "\033[1;36m**\033[1;37m\t$@\033[0m"
-}
-
-aosc_warn() {
-	echo -e "\033[1;33m**\033[1;37m\t$@\033[0m"
-}
-
-aosc_err() {
-	echo -e "\033[1;31m!!\033[1;37m\t$@\033[0m"
-}
-
 # Try to find the boot partition and mount it automatically.
 mount_boot_rpi() {
 	# Find the disk which contains the root partition.
@@ -21,9 +9,8 @@ mount_boot_rpi() {
 	ROOTDEV="$(lsblk -lno PKNAME $ROOTPART)"
 	# If any of these contains device mapper paths, the script will fail.
 	if [ ! -e "$ROOTPART" ] || [ ! -e "/dev/$ROOTDEV" ] ; then
-		echo "[!] Could not determine the root device. Failing."
-		echo "    Please mount the boot partition to /boot/rpi and try again."
-		exit 1
+		err "Could not determine the root device. Failing."
+		return 1
 	fi
 	# If the disk contains a GPT partition table, we just find the EFI
 	# System Partition. Our built image will always contain a GPT
@@ -37,39 +24,39 @@ mount_boot_rpi() {
 	fi
 	# In case of multiple partitions found, fail.
 	if [ "${#BOOTPART[@]}" -gt "1" ] ; then
-		echo "[!] There are more than one possible boot partition found."
-		echo "    Please mount the boot partition to /boot/rpi and try again."
-		exit 1
+		err "There are more than one possible boot partition found."
+		return 1
 	# Or, if we can not find one, fail.
 	elif [ ! "$BOOTPART" ] ; then
-		echo "[!] Could not find the boot partition. Failing."
-		echo "    Please mount the boot partition to /boot/rpi and try again."
-		exit 1
+		err "Could not find the boot partition. Failing."
+		return 1
 	fi
 	# Make sure it is FAT32.
 	eval $(blkid -oexport /dev/$BOOTPART)
 	if [ "$TYPE" != "vfat" ] ; then
-		echo "[!] Possible boot partition found, but the partition is not a FAT32 partition."
-		echo "    Please mount the boot partition to /boot/rpi and try again."
-		exit 1
+		err "Possible boot partition found, but the partition is not a FAT32 partition."
+		return 1
 	fi
-	echo "[+] Mounting /dev/$BOOTPART to /boot/rpi."
+	info "Mounting /dev/$BOOTPART to /boot/rpi."
+	mkdir -p /boot/rpi $SYSROOT/boot/rpi
 	mount /dev/$BOOTPART /boot/rpi
-	mount /dev/$BOOTPART $TARGET_SYSROOT/boot/rpi
+	mount /dev/$BOOTPART $SYSROOT/boot/rpi
 }
 
 gen_cmdline() {
 	if ! grep -q -- '/boot/rpi' /proc/mounts ; then
-		aosc_info "Boot partition is not mounted. Trying to mount it automatically..."
+		info "Boot partition is not mounted. Trying to mount it automatically..."
 		mount_boot_rpi
 	fi
-	aosc_info "Generating kernel command line ..."
-	eval $(findmnt -o SOURCE -Py ${TARGET_SYSROOT:-/sysroot})
+	info "Generating kernel command line ..."
+	SYSROOT=${TARGET_SYSROOT:-/sysroot}
+	eval $(findmnt -o SOURCE -Py $SYSROOT)
 	if [[ "$SOURCE" = /dev/dm* ]] || [ ! -e "$SOURCE" ] ; then
-		aosc_info "Root filesystem is not inside a physical disk partition. Skipping."
+		info "Root filesystem is not inside a physical disk partition. Skipping."
+		return
 	fi
 	# Get PARTUUID of the root partition
 	eval $(blkid -o export $SOURCE)
-	echo "console=serial0,115200 console=tty1 root=PARTUUID=$PARTUUID rw fsck.repair=yes rootwait" \
+	echo "console=serial0,115200 console=tty1 root=PARTUUID=$PARTUUID rw fsck.repair=yes rootwait quiet splash" \
 		| tee /boot/rpi/cmdline.txt
 }
