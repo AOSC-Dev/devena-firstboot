@@ -48,9 +48,13 @@ export INSTALL
 # This is required by all devices
 generic-components = dracut
 generic-files = devena-utils.bash
-.PHONY: $(generic-components) $(generic-files)
 
-install: install-generic $(generic-components) $(generic-files)
+configs = etc/default/devena
+bins = create-devena-initrd
+
+.PHONY: $(generic-components) $(generic-files) $(configs) $(bins)
+
+install: install-generic $(generic-components) $(generic-files) $(configs) $(bins)
 	@$(info)"Installing files for $(DEVICE) ..." $(clr)
 	$(MAKE) -C $(DEVICE) $@
 	@$(info)"Installation finished!" $(clr)
@@ -80,12 +84,20 @@ $(generic-components):
 	@$(info)"Installing component $@ ..." $(clr)
 	$(MAKE) -C $@ install
 
-$(generic-files):
+$(generic-files) $(configs):
 	@$(info)"Copying file $@" $(clr)
 	@if [ -e "$(DEVICE)/$@" ] ; then \
 		$(INSTALL) $(TOP)/$(DEVICE)/$@ $(DESTDIR)/$(DEVENA_LIB_DIR)/$@ ; \
 	else \
 		$(INSTALL) $(TOP)/$@ $(DESTDIR)/$(DEVENA_LIB_DIR)/$@ ; \
+	fi
+
+$(bins):
+	@$(info)"Installing binary $@" $(clr)
+	@if [ -e "$(DEVICE)/$@" ] ; then \
+		$(INSTALL) $(TOP)/$(DEVICE)/$@ $(DESTDIR)/usr/bin/$@ ; \
+	else \
+		$(INSTALL) $(TOP)/$@ $(DESTDIR)/usr/bin/$@ ; \
 	fi
 
 .PHONY: install
