@@ -5,6 +5,10 @@ if [ "$ACTUAL_RUN" != "1" ] ; then
 	# Terminate plymouth first
 	type plymouth > /dev/null 2>&1 && plymouth quit
 	export ACTUAL_RUN="1"
+
+	# Clear the screen.
+	echo -n "[H[2J[3J"
+
 	script -e -q -c "$0" /var/log/devena-firstboot.log || {
 		devena-error-handler
 		reboot -f
