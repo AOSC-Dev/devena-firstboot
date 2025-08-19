@@ -35,7 +35,9 @@ DEVICES := rpi asahi generic
 # Utilities
 INSTALL = install -D
 
-ifeq ($(VERBOSE),1)
+ifneq ($(V),)
+INSTALL = install -Dv
+else ifneq ($(VERBOSE),)
 INSTALL = install -Dv
 endif
 
