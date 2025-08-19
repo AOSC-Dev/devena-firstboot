@@ -80,6 +80,10 @@ $(generic-components):
 
 $(generic-files):
 	@$(info)"Copying file $@" $(clr)
-	@$(INSTALL) $(TOP)/$@ $(DESTDIR)/$(DEVENA_LIB_DIR)/$@
+	@if [ -e "$(DEVICE)/$@" ] ; then \
+		$(INSTALL) $(TOP)/$(DEVICE)/$@ $(DESTDIR)/$(DEVENA_LIB_DIR)/$@ ; \
+	else \
+		$(INSTALL) $(TOP)/$@ $(DESTDIR)/$(DEVENA_LIB_DIR)/$@ ; \
+	fi
 
 .PHONY: install
