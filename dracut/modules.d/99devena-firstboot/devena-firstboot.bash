@@ -1,8 +1,15 @@
 #!/bin/bash
-# Stub file
+# Main entry of the devena-firstboot.
 
-# Terminate plymouth first
-type plymouth > /dev/null 2>&1 && plymouth quit
+if [ "$ACTUAL_RUN" != "1" ] ; then
+	# Terminate plymouth first
+	type plymouth > /dev/null 2>&1 && plymouth quit
+	export ACTUAL_RUN="1"
+	script -e -q -c "$0" /var/log/devena-firstboot.log || {
+		devena-error-handler
+		reboot -f
+	}
+fi
 
 source /usr/lib/devena-firstboot/devena-utils.bash
 
@@ -15,7 +22,7 @@ info "The first boot setup is taking place, please wait."
 sleep 5
 
 for f in /usr/lib/devena-firstboot/first-boot.d/*.bash ; do
-	source $f
+	source $f || exit 1
 	sleep 1
 done
 
