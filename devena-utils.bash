@@ -35,9 +35,9 @@ mount_esp() {
 	fi
 	eval $(blkid -oexport /dev/$ROOTDEV)
 	if [ "$PTTYPE" == "gpt" ] ; then
-		EFIART=($(lsblk -lnoNAME,PARTTYPE $ROOTDEV| grep 'c12a7328-f81f-11d2-ba4b-00a0c93ec93b' | awk '{ print $1 }'))
+		EFIART=($(lsblk -lnoNAME,PARTTYPE /dev/$ROOTDEV | grep 'c12a7328-f81f-11d2-ba4b-00a0c93ec93b' | awk '{ print $1 }'))
 	elif [ "$PTTYPE" == "dos" ] ; then
-		EFIART=($(lsblk -lnoNAME,PARTTYPE $ROOTDEV | grep '0xef' | awk '{ print $1 }'))
+		EFIART=($(lsblk -lnoNAME,PARTTYPE /dev/$ROOTDEV | grep '0xef' | awk '{ print $1 }'))
 	fi
 	# In case of multiple partitions found, fail.
 	if [ "${#EFIART[@]}" -gt "1" ] ; then
