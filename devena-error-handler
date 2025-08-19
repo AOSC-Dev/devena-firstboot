@@ -1,0 +1,34 @@
+#!/bin/bash
+. /usr/lib/devena-firstboot/devena-utils.bash
+
+err "The initial setup encountered a problem and can not continue."
+err "Dropping into an emergency shell, press Enter to activate."
+
+cat >> /etc/profile << EOF
+cat << EEOF
+=======================================
+    devena-firstboot Emergency Mode
+=======================================
+
+One of the first-boot initialization steps failed to run. Dropping into an
+emergency shell.
+
+Please insert a spare USB stick, mount it and copy the following file into
+your USB stick:
+	[1m/var/log/devena-firstboot.log[0m
+
+Please also save the system log into your USB stick:
+	[1mjournalctl -a -b > /mount/point/devena.log[0m
+
+Tips:
+
+- '[1mlsblk[0m' may be helpful for you to find your USB stick.
+- '[1mjournalctl -a -b[0m' for viewing the system logs.
+- '[1mdmesg | less[0m' for viewing the kernel logs.
+EEOF
+EOF
+
+while true ; do
+	sulogin -e -p
+	bash --login -i
+done

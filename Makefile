@@ -50,7 +50,7 @@ generic-components = dracut
 generic-files = devena-utils.bash
 
 configs = etc/default/devena
-bins = create-devena-initrd
+bins = create-devena-initrd devena-error-handler
 
 .PHONY: $(generic-components) $(generic-files) $(configs) $(bins)
 
