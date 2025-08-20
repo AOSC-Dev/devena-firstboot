@@ -84,12 +84,20 @@ $(generic-components):
 	@$(info)"Installing component $@ ..." $(clr)
 	$(MAKE) -C $@ install
 
-$(generic-files) $(configs):
+$(generic-files):
 	@$(info)"Copying file $@" $(clr)
 	@if [ -e "$(DEVICE)/$@" ] ; then \
 		$(INSTALL) $(TOP)/$(DEVICE)/$@ $(DESTDIR)/$(DEVENA_LIB_DIR)/$@ ; \
 	else \
 		$(INSTALL) $(TOP)/$@ $(DESTDIR)/$(DEVENA_LIB_DIR)/$@ ; \
+	fi
+
+$(configs):
+	@$(info)"Installing config $@" $(clr)
+	@if [ -e "$(DEVICE)/$@" ] ; then \
+		$(INSTALL) -m644 $(TOP)/$(DEVICE)/$@ $(DESTDIR)/$@ ; \
+	else \
+		$(INSTALL) -m644 $(TOP)/$@ $(DESTDIR)/$@ ; \
 	fi
 
 $(bins):
