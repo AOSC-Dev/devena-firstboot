@@ -8,7 +8,6 @@ files-firstboot-general = \
 	1030-expand-rootfs.bash \
 	1040-randomize-fsuuid.bash \
 	2010-mount-rootdev.bash \
-	2020-allocate-swapfile.bash \
 	9900-generate-fstab.bash \
 	9990-umount-sysroot.bash
 
