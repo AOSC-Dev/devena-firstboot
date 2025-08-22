@@ -31,6 +31,7 @@ CHOSEN="${KERNELS[-1]}"
 echo "-- Building devena-firstboot enabled initrd image ..."
 dracut \
 	--add "devena-firstboot" \
+	--no-hostonly \
 	"$OUTPUT" \
 	"$CHOSEN" || {
 		echo "Failed to generate $OUTPUT." >&2

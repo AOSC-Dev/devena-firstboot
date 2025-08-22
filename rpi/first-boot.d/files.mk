@@ -8,10 +8,11 @@ files-firstboot-general = \
 	1030-expand-rootfs.bash \
 	1040-randomize-fsuuid.bash \
 	2010-mount-rootdev.bash \
-	2020-allocate-swapfile.bash \
 	9900-generate-fstab.bash \
 	9990-umount-sysroot.bash
 
 # firstboot-rpi: First boot scripts specific to Raspberry Pi
 files-firstboot-rpi = \
-	2011-mount-boot-partition.bash
+	2011-mount-boot-partition.bash \
+	9010-remove-devena-initrd.bash \
+	9910-generate-cmdline.bash
