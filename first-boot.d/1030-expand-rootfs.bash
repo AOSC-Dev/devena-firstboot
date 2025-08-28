@@ -3,8 +3,6 @@
 # first-boot.d - Device specific first boot configuration
 # expand-rootfs - automatically expand the root filesystem.
 
-[ -e /etc/default/devena ] && source /etc/default/devena
-
 resize_root_partition() {
 	TMP_MOUNT=$(mktemp -d)
 	info "Mounting the root filesystem to expand it..."
@@ -19,7 +17,7 @@ resize_root_partition() {
 			xfs_growfs $ROOTPART_PATH
 			;;
 		btrfs)
-			btrfs filesystem resize max $ROOTPART_PATH
+			btrfs filesystem resize max $TMP_MOUNT
 			;;
 		*)
 			warn "Unsupported filesystem: $TYPE. Skipping."
