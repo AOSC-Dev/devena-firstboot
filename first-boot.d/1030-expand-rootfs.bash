@@ -19,7 +19,7 @@ resize_root_partition() {
 			xfs_growfs $ROOTPART_PATH
 			;;
 		btrfs)
-			btrfs filesystem resize $ROOTPART_PATH
+			btrfs filesystem resize max $ROOTPART_PATH
 			;;
 		*)
 			warn "Unsupported filesystem: $TYPE. Skipping."
