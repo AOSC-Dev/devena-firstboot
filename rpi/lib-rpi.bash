@@ -18,9 +18,9 @@ mount_boot_rpi() {
 	# For MBR, the partition type is probably 0x0c (Win95 FAT32 LBA).
 	eval $(blkid -oexport /dev/$ROOTDEV)
 	if [ "$PTTYPE" == "gpt" ] ; then
-		BOOTPART=($(lsblk -lnoNAME,PARTTYPE | grep 'c12a7328-f81f-11d2-ba4b-00a0c93ec93b' | grep $ROOTDEV | awk '{ print $1 }'))
+		BOOTPART=($(lsblk -lnoNAME,PARTTYPE /dev/$ROOTDEV | grep 'c12a7328-f81f-11d2-ba4b-00a0c93ec93b' | grep $ROOTDEV | awk '{ print $1 }'))
 	elif [ "$PTTYPE" == "dos" ] ; then
-		BOOTPART=($(lsblk -lnoNAME,PARTTYPE | grep '0xc' | grep $ROOTDEV | awk '{ print $1 }'))
+		BOOTPART=($(lsblk -lnoNAME,PARTTYPE /dev/$ROOTDEV | grep '0xc' | grep $ROOTDEV | awk '{ print $1 }'))
 	fi
 	# In case of multiple partitions found, fail.
 	if [ "${#BOOTPART[@]}" -gt "1" ] ; then
