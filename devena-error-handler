@@ -13,9 +13,10 @@ cat << EEOF
 One of the first-boot initialization steps failed to run. Dropping into an
 emergency shell.
 
-Please insert a spare USB stick, mount it and copy the following file into
+Please insert a spare USB stick, mount it and copy the following files into
 your USB stick:
 	[1m/var/log/devena-firstboot.log[0m
+	[1m/run/devena-firstboot-debug.log[0m
 
 Please also save the system log into your USB stick:
 	[1mjournalctl -a -b > /mount/point/devena.log[0m
