@@ -35,7 +35,7 @@ randomize_rootfs_uuid() {
 			;;
 		btrfs)
 			# Unsupported unless we have a specialized initrd
-			btrfstune -U $ROOTFS_UUID_NEW $ROOTPART_PATH
+			btrfstune -f -U $ROOTFS_UUID_NEW $ROOTPART_PATH
 			;;
 		*)
 			warn "Unsupported filesystem: $TYPE."
