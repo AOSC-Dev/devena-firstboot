@@ -35,7 +35,9 @@ DEVICES := rpi asahi generic
 # Utilities
 INSTALL = install -D
 
-ifeq ($(VERBOSE),1)
+ifneq ($(V),)
+INSTALL = install -Dv
+else ifneq ($(VERBOSE),)
 INSTALL = install -Dv
 endif
 
@@ -46,9 +48,13 @@ export INSTALL
 # This is required by all devices
 generic-components = dracut
 generic-files = devena-utils.bash
-.PHONY: $(generic-components) $(generic-files)
 
-install: install-generic $(generic-components) $(generic-files)
+configs = etc/default/devena
+bins = create-devena-initrd devena-error-handler
+
+.PHONY: $(generic-components) $(generic-files) $(configs) $(bins)
+
+install: install-generic $(generic-components) $(generic-files) $(configs) $(bins)
 	@$(info)"Installing files for $(DEVICE) ..." $(clr)
 	$(MAKE) -C $(DEVICE) $@
 	@$(info)"Installation finished!" $(clr)
@@ -80,6 +86,26 @@ $(generic-components):
 
 $(generic-files):
 	@$(info)"Copying file $@" $(clr)
-	@$(INSTALL) $(TOP)/$@ $(DESTDIR)/$(DEVENA_LIB_DIR)/$@
+	@if [ -e "$(DEVICE)/$@" ] ; then \
+		$(INSTALL) $(TOP)/$(DEVICE)/$@ $(DESTDIR)/$(DEVENA_LIB_DIR)/$@ ; \
+	else \
+		$(INSTALL) $(TOP)/$@ $(DESTDIR)/$(DEVENA_LIB_DIR)/$@ ; \
+	fi
+
+$(configs):
+	@$(info)"Installing config $@" $(clr)
+	@if [ -e "$(DEVICE)/$@" ] ; then \
+		$(INSTALL) -m644 $(TOP)/$(DEVICE)/$@ $(DESTDIR)/$@ ; \
+	else \
+		$(INSTALL) -m644 $(TOP)/$@ $(DESTDIR)/$@ ; \
+	fi
+
+$(bins):
+	@$(info)"Installing binary $@" $(clr)
+	@if [ -e "$(DEVICE)/$@" ] ; then \
+		$(INSTALL) $(TOP)/$(DEVICE)/$@ $(DESTDIR)/usr/bin/$@ ; \
+	else \
+		$(INSTALL) $(TOP)/$@ $(DESTDIR)/usr/bin/$@ ; \
+	fi
 
 .PHONY: install

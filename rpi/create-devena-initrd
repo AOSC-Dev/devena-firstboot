@@ -1,0 +1,68 @@
+#!/bin/bash
+
+if [ "$EUID" -ne 0 ]; then
+	echo "This script should be run as root." >&2
+	exit
+fi
+
+if ! grep -q " /boot/rpi " "/proc/mounts" ; then
+	echo "Please mount the boot partition first."
+	exit 1
+fi
+
+# Omit some modules to make the initrd image smaller.
+OMIT_MODULES=(i18n crypt network plymouth qemu qemu-net tpm2-tss multipath lvm virtiofs ostree mdraid)
+
+KERNELS=()
+for version in `find /usr/lib/modules -mindepth 1 -maxdepth 1 -type d -printf '%P\n' | sort -V` ; do
+	if [ -f "/usr/lib/modules/${version}/modules.dep" ] && [ -f "/usr/lib/modules/${version}/modules.order" ] && [ -f "/usr/lib/modules/${version}/modules.builtin" ]; then
+		KERNELS+=("$version")
+	fi
+done
+
+if [ "${#KERNELS[@]}" = 0 ] ; then
+	echo "No kernels found in the current system. Exiting." >&2
+	exit 1
+fi
+
+if [ ! -e /etc/default/devena ] ; then
+	echo "Installing devena-firstboot config file ..."
+	install -Dvm644 etc/default/devena /etc/default/devena
+fi
+
+echo "-- Building devena-firstboot enabled initrd image ..."
+for kernel in "${KERNELS[@]}" ; do
+	if [ "${kernel%%-*pi4}" != "$kernel" ] ; then
+		OUTPUT="/boot/rpi/devena-initrd-rpi4.img"
+	elif [ "${kernel%%-*pi5}" != "$kernel" ] ; then
+		OUTPUT="/boot/rpi/devena-initrd-rpi5.img"
+	else
+		echo "-- Unknown kernel $kernel - skipping."
+	fi
+	dracut \
+		--add "devena-firstboot" \
+		--omit " ${OMIT_MODULES[*]} " \
+		"$OUTPUT" \
+		"$kernel" || {
+			echo "Failed to generate $OUTPUT." >&2
+			exit 1
+		}
+done
+
+echo "-- Creating devena-cfg.txt ..."
+cat > /boot/rpi/devena-cfg.txt << EOF
+# Initramfs configuration for devena-firstboot.
+# DO NOT EDIT! This file will be removed after finishing the first boot
+# setup.
+[pi3]
+initramfs devena-initrd-rpi4.img followkernel
+[pi4]
+initramfs devena-initrd-rpi4.img followkernel
+[pi5]
+initramfs devena-initrd-rpi5.img followkernel
+EOF
+
+if ! grep -q "^include devena-cfg.txt" /boot/rpi/distcfg.txt ; then
+	echo "-- Including devena-cfrg.txt in distcfg.txt ..."
+	echo "include devena-cfg.txt" >> /boot/rpi/distcfg.txt
+fi

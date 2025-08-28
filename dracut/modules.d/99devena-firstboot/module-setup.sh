@@ -8,7 +8,8 @@ check() {
 		bash partprobe lsblk blkid xfs_admin tune2fs realpath \
 		basename findmnt btrfstune unshare install env \
 		uuidgen mountpoint dd sfdisk sed mktemp resize2fs \
-		xfs_growfs swapon mkswap bc chroot stat sync || return 1
+		xfs_growfs swapon mkswap bc chroot stat sync \
+		awk grep tee script || return 1
 	return 255
 }
 
@@ -22,8 +23,12 @@ install() {
 		bash partprobe lsblk blkid xfs_admin tune2fs realpath \
 		basename findmnt btrfstune unshare install env \
 		uuidgen mountpoint dd sfdisk sed mktemp resize2fs \
-		xfs_growfs swapon mkswap bc chroot stat sync
+		xfs_growfs swapon mkswap bc chroot stat sync \
+		awk grep tee script
 	# Devena files
+	for f in $(find /usr/lib/devena-firstboot -maxdepth 1 -type f -name 'lib-*.bash') ; do
+		inst $f
+	done
 	for f in /usr/lib/devena-firstboot/first-boot.d/* ; do
 		inst $f
 	done
@@ -33,6 +38,7 @@ install() {
 	# Dependencies
 	inst_script /usr/bin/arch-chroot /sbin/arch-chroot
 	inst_script /usr/bin/genfstab /sbin/genfstab
+	inst_script /usr/bin/devena-error-handler /sbin/devena-error-handler
 	# Systemd unit configuration
 	inst_simple "$moddir/devena-firstboot.service" "$systemdsystemunitdir/devena-firstboot.service"
 	$SYSTEMCTL -q --root "$initdir" add-wants initrd.target "devena-firstboot.service"
