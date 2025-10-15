@@ -45,7 +45,7 @@ randomize_rootfs_uuid() {
 	partprobe $ROOTDEV_PATH
 	# There is a possible race condition which might result the following branch to be true.
 	sleep 10
-	eval $(lsblk -o UUID -Py $ROOTDEV_PATH)
+	eval $(lsblk -o UUID -Py $ROOTPART_PATH)
 	if [ "x$ROOTFS_UUID_NEW" != "x$UUID" ] ; then
 		die "Conflicting UUID discovered - This should not happen."
 		exit 1
