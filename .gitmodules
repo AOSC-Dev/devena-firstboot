@@ -1,4 +1,0 @@
-[submodule "asahi"]
-	path = asahi
-	url = https://github.com/AOSC-Dev/asahi-scripts.git
-	branch = aosc-os
