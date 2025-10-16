@@ -1,5 +1,7 @@
 # List of files required by this target
 #
+files-firstboot-asahi = \
+	9910-update-grub.bash
 # NOTE:
 # - Asahi devices do not require resizing the partition table. Their root
 #   partitions are created on the fly. So the identifier is guranteed to be
@@ -22,5 +24,4 @@ files-firstboot-general = \
 	2010-mount-rootdev.bash \
 	2011-mount-esp.bash \
 	9900-generate-fstab.bash \
-	9910-update-grub.bash \
 	9990-umount-sysroot.bash \
