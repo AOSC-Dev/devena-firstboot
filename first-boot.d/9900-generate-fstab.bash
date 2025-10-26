@@ -32,7 +32,7 @@ EOF
 	else
 		genfstab -t UUID -p "$TARGET_SYSROOT" | sed '/resolv/d' >> "$TARGET_SYSROOT"/etc/fstab
 	fi
-	msg "Finished."
+	msg "Done."
 }
 
 if [ "x$HAS_REAL_ROOTDEV" == "x1" ] && \
