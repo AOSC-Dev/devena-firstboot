@@ -25,11 +25,6 @@ if [ "${#KERNELS[@]}" = 0 ] ; then
 	exit 1
 fi
 
-if [ ! -e /etc/default/devena ] ; then
-	echo "Installing devena-firstboot config file ..."
-	install -Dvm644 etc/default/devena /etc/default/devena
-fi
-
 echo "-- Building devena-firstboot enabled initrd image ..."
 for kernel in "${KERNELS[@]}" ; do
 	if [ "${kernel%%-*pi4}" != "$kernel" ] ; then
@@ -38,6 +33,7 @@ for kernel in "${KERNELS[@]}" ; do
 		OUTPUT="/boot/rpi/devena-initrd-rpi5.img"
 	else
 		echo "-- Unknown kernel $kernel - skipping."
+		continue
 	fi
 	dracut \
 		--add "devena-firstboot" \
@@ -48,21 +44,3 @@ for kernel in "${KERNELS[@]}" ; do
 			exit 1
 		}
 done
-
-echo "-- Creating devena-cfg.txt ..."
-cat > /boot/rpi/devena-cfg.txt << EOF
-# Initramfs configuration for devena-firstboot.
-# DO NOT EDIT! This file will be removed after finishing the first boot
-# setup.
-[pi3]
-initramfs devena-initrd-rpi4.img followkernel
-[pi4]
-initramfs devena-initrd-rpi4.img followkernel
-[pi5]
-initramfs devena-initrd-rpi5.img followkernel
-EOF
-
-if ! grep -q "^include devena-cfg.txt" /boot/rpi/distcfg.txt ; then
-	echo "-- Including devena-cfrg.txt in distcfg.txt ..."
-	echo "include devena-cfg.txt" >> /boot/rpi/distcfg.txt
-fi
