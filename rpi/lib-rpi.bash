@@ -57,6 +57,6 @@ gen_cmdline() {
 	fi
 	# Get PARTUUID of the root partition
 	eval $(blkid -o export $SOURCE)
-	echo "console=serial0,115200 console=tty1 root=PARTUUID=$PARTUUID rw fsck.repair=yes rootwait quiet splash" \
+	echo "console=serial0,115200 console=tty1 root=PARTUUID=$PARTUUID fsck.repair=yes rootwait quiet splash" \
 		| tee /boot/rpi/cmdline.txt
 }
